@@ -85,22 +85,12 @@ public class RMQMessageProducer implements MqMessageProducer<SendResult> {
 
         SendResult result;
         if (producerConfig.getCustomizedMQSelector() == null) {
-            result = mqMessageProducer.send(message, );
+            result = mqMessageProducer.send(message);
         } else {
             result = mqMessageProducer.send(message, producerConfig.getCustomizedMQSelector(), mqClientMessage.getSendOpts());
         }
         log.info("Send message result, id={}, status={}", result.getMsgId(), result.getSendStatus());
     }
 
-    public class RMQSendCallBack implements SendCallback {
-        @Override
-        public void onSuccess(SendResult sendResult) {
 
-        }
-
-        @Override
-        public void onException(Throwable e) {
-
-        }
-    }
 }

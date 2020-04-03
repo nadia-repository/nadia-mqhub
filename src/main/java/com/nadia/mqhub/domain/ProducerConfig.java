@@ -1,7 +1,6 @@
 package com.nadia.mqhub.domain;
 
 import com.google.common.collect.Maps;
-import com.oriente.mq.service.MqMessageListener;
 import lombok.Data;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 
