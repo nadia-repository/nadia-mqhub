@@ -4,6 +4,7 @@ import com.nadia.mqhub.annotation.ProducerType;
 import com.nadia.mqhub.domain.MqType;
 import com.nadia.mqhub.domain.ProducerConfig;
 import com.nadia.mqhub.entity.MqClientMessageEntity;
+import com.nadia.mqhub.mq.Callback;
 import com.nadia.mqhub.mq.MqMessageProducer;
 import com.nadia.mqhub.utils.MqUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -73,24 +74,7 @@ public class RMQMessageProducer implements MqMessageProducer<SendResult> {
     }
 
     @Override
-    public void sendCallback(MqClientMessageEntity mqClientMessage) throws Exception {
-        Message message = new Message(mqClientMessage.getDestination(), mqClientMessage.getTags(),
-                mqClientMessage.getMessage().getBytes(RemotingHelper.DEFAULT_CHARSET));
-        message.setKeys(mqClientMessage.getMessageKey());
+    public void send(MqClientMessageEntity mqClientMessageEntity, Callback callback) throws Exception {
 
-        // put the message header
-        if (StringUtils.isNotBlank(mqClientMessage.getMessageHeader())) {
-            message.putUserProperty(MqUtils.HEAD, mqClientMessage.getMessageHeader());
-        }
-
-        SendResult result;
-        if (producerConfig.getCustomizedMQSelector() == null) {
-            result = mqMessageProducer.send(message);
-        } else {
-            result = mqMessageProducer.send(message, producerConfig.getCustomizedMQSelector(), mqClientMessage.getSendOpts());
-        }
-        log.info("Send message result, id={}, status={}", result.getMsgId(), result.getSendStatus());
     }
-
-
 }
