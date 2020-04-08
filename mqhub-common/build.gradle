@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'com.nadia.mqhub'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.6.RELEASE'
+
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    compile("log4j:log4j:1.2.17")
+    compile('org.apache.rocketmq:rocketmq-client:4.2.0')
+    compile("com.google.guava:guava:26.0-jre")
+    compile("org.apache.commons:commons-lang3:3.0")
+    compile group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

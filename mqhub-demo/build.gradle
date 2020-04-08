@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'com.nadia.mqhub'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(project(":mqhub-producer"))
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

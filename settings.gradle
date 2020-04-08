@@ -1,1 +1,6 @@
 rootProject.name = 'nadia-mqhub'
+include 'mqhub-producer'
+include 'mqhub-consumer'
+include 'mqhub-common'
+include 'mqhub-demo'
+
