@@ -1,0 +1,9 @@
+server:
+  port: 6088
+  context-path: /
+
+
+mqhub:
+  rmq:
+    producerGroupName: demo
+    nameSrv: 11113.229.90.12:9876

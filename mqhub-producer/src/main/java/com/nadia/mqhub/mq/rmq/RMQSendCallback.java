@@ -1,4 +1,4 @@
-package com.nadia.mqhub.producer.mq.rmq;
+package com.nadia.mqhub.mq.rmq;
 
 import lombok.Setter;
 import org.apache.rocketmq.client.producer.SendCallback;

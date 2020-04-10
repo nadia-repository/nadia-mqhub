@@ -1,15 +1,15 @@
-package com.nadia.mqhub.producer.mq;
+package com.nadia.mqhub.mq;
 
 import com.google.common.collect.Maps;
 import com.nadia.mqhub.common.annotation.ProducerType;
-import com.nadia.mqhub.common.AfterCommitTaskRegister;
-import com.nadia.mqhub.common.ConcurrencyWrapper;
 import com.nadia.mqhub.common.domain.MessageClientStatus;
 import com.nadia.mqhub.common.domain.MqClientConstants;
 import com.nadia.mqhub.common.domain.MqResult;
 import com.nadia.mqhub.common.domain.MqType;
 import com.nadia.mqhub.common.entity.MqClientMessageEntity;
 import com.nadia.mqhub.common.mapper.MqClientMessageMapper;
+import com.nadia.mqhub.common.utils.AfterCommitTaskRegister;
+import com.nadia.mqhub.common.utils.ConcurrencyWrapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendStatus;
@@ -41,7 +41,7 @@ public class DefaultMqClient implements MqClient {
     @Autowired
     private ExecutorService workQueueExecutor;
 
-    @Autowired
+//    @Autowired
     private MqClientMessageMapper mqClientMessageMapper;
 
     private Map<String, MqMessageProducer> mqMessageProducerMap = Maps.newHashMap();
@@ -88,18 +88,22 @@ public class DefaultMqClient implements MqClient {
 
     @Override
     public MqResult send(MqClientMessageEntity mqClientMessageEntity) {
-
-        return null;
+        return send(mqClientMessageEntity,false);
     }
 
     @Override
     public MqResult send(MqClientMessageEntity mqClientMessageEntity, boolean persistOn) {
-        return null;
+        return send(mqClientMessageEntity,false,false);
     }
 
     @Override
     public MqResult send(MqClientMessageEntity mqClientMessageEntity, boolean persistOn, boolean local) {
-        return null;
+        log.info("MqClientServiceImpl.send, param={}", mqClientMessageEntity);
+        if(persistOn){
+            mqClientMessageMapper.insertMessage(mqClientMessageEntity);
+            log.info("insert mq client record successfully,id={}", mqClientMessageEntity.getId());
+        }
+        return doSendWithResult(mqClientMessageEntity,persistOn,local);
     }
 
     private void doSend(MqClientMessageEntity mqClientMessageEntity,boolean persistOn, boolean local){
@@ -146,6 +150,52 @@ public class DefaultMqClient implements MqClient {
             mqClientMessageMapper.updateMessageStatus(params);
         }
 
+    }
+
+    private MqResult doSendWithResult(MqClientMessageEntity mqClientMessageEntity,boolean persistOn, boolean local){
+        // send message
+        log.info("Start to send mq with context={}", mqClientMessageEntity);
+
+        Map<String, Object> params = Maps.newHashMap();
+//        params.put("mqClientMessageTable", mqClientConfig.getMqClientTableName());
+        params.put("id", mqClientMessageEntity.getId());
+        params.put("partitionKey", mqClientMessageEntity.getPartitionKey());
+        try {
+            MqMessageProducer mqMessageProducer = mqMessageProducerMap.get(mqClientMessageEntity.getMqType());
+            if (mqMessageProducer == null) {
+                log.error("Fail to get message producer for mqType={}", mqClientMessageEntity.getMqType());
+                return null;
+            }
+            MqResult result = mqMessageProducer.send(mqClientMessageEntity);
+            if (SendStatus.SEND_OK.equals(result.getSendStatus())) {
+                params.put("status", MessageClientStatus.SUCCESS.name());
+                params.put("messageId", result.getMsgId());
+            } else {
+                params.put("status", MessageClientStatus.FAILED.name());
+                params.put("nextRetryAt", new Date(new Date().getTime() + MqClientConstants.NEXT_RETRY_GAP));
+                if(local){
+                    persistOnLocal(mqClientMessageEntity);
+                }
+            }
+            log.info("doSend params={}", params);
+        } catch (Throwable t) {
+            log.error("Fail to send the message, params={}", params, t);
+
+            params.put("status", MessageClientStatus.FAILED.name());
+            params.put("nextRetryAt", new Date(new Date().getTime() + MqClientConstants.NEXT_RETRY_GAP));
+            if(local){
+                persistOnLocal(mqClientMessageEntity);
+            }
+        }
+
+        if (persistOn) {
+            log.info("Updating the message status with param={}", params);
+//            if (mqClientMessageEntity.isFailoverCtx()) {
+//                params.put("retryCount", mqClientMessageEntity.getRetryCount() + 1);
+//            }
+            mqClientMessageMapper.updateMessageStatus(params);
+        }
+        return null;
     }
 
     private void persistOnLocal(MqClientMessageEntity mqClientMessageEntity){

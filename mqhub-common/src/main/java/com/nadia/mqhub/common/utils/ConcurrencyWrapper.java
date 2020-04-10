@@ -18,9 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ConcurrencyWrapper {
     private static AtomicReference<ConcurrencyWrapper> instance= new AtomicReference<>();
 
-    @Autowired
-    private List<ConcurrencyProcessor> processors= new LinkedList<>();
-
     @PostConstruct
     public void init(){
         instance.compareAndSet(null,this);
@@ -28,9 +25,6 @@ public class ConcurrencyWrapper {
 
     public static Runnable of(Runnable runnable){
         final List<Pair<ConcurrencyProcessor,Object>> mainThreadValueHolders= new LinkedList<>();
-        for(ConcurrencyProcessor each: instance.get().processors){
-            mainThreadValueHolders.add(new Pair<>(each,each.getThresholdValue()));
-        }
         Runnable delegate= () -> {
             try {
                 for(Pair<ConcurrencyProcessor,Object> each: mainThreadValueHolders){
@@ -48,9 +42,6 @@ public class ConcurrencyWrapper {
 
     public static <T> Callable<T> of(Callable<T> task){
         final List<Pair<ConcurrencyProcessor,Object>> mainThreadValueHolders= new LinkedList<>();
-        for(ConcurrencyProcessor each: instance.get().processors){
-            mainThreadValueHolders.add(new Pair<>(each,each.getThresholdValue()));
-        }
         Callable<T> delegate= () -> {
             try {
                 for(Pair<ConcurrencyProcessor,Object> each: mainThreadValueHolders){

@@ -1,12 +1,12 @@
-package com.nadia.mqhub.producer.mq.rmq;
+package com.nadia.mqhub.mq.rmq;
 
 import com.nadia.mqhub.common.annotation.ProducerType;
 import com.nadia.mqhub.common.domain.MqResult;
 import com.nadia.mqhub.common.domain.MqType;
 import com.nadia.mqhub.common.domain.ProducerConfig;
 import com.nadia.mqhub.common.entity.MqClientMessageEntity;
-import com.nadia.mqhub.producer.mq.Callback;
-import com.nadia.mqhub.producer.mq.MqMessageProducer;
+import com.nadia.mqhub.mq.Callback;
+import com.nadia.mqhub.mq.MqMessageProducer;
 import com.nadia.mqhub.common.utils.MqUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +53,7 @@ public class RMQMessageProducer implements MqMessageProducer {
 
     @Override
     public MqResult send(MqClientMessageEntity mqClientMessage) throws UnsupportedEncodingException, InterruptedException, RemotingException, MQClientException, MQBrokerException {
-        Message message = new Message(mqClientMessage.getDestination(), mqClientMessage.getTags(),
+        Message message = new Message(mqClientMessage.getTopic(), mqClientMessage.getTags(),
                 mqClientMessage.getMessage().getBytes(RemotingHelper.DEFAULT_CHARSET));
         message.setKeys(mqClientMessage.getMessageKey());
 

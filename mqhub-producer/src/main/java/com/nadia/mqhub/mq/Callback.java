@@ -1,4 +1,4 @@
-package com.nadia.mqhub.producer.mq;
+package com.nadia.mqhub.mq;
 
 import lombok.Data;
 

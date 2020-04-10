@@ -1,6 +1,6 @@
 package com.nadia.mqhub.config;
 
-import com.nadia.mqhub.common.ThreadFactoryImpl;
+import com.nadia.mqhub.common.utils.ThreadFactoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package com.nadia.mqhub.producer.mq;
+package com.nadia.mqhub.mq;
 
 import com.nadia.mqhub.common.domain.MqResult;
 import com.nadia.mqhub.common.entity.MqClientMessageEntity;

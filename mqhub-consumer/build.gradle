@@ -12,5 +12,7 @@ repositories {
 }
 
 dependencies {
+    compile(project(":mqhub-common"))
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

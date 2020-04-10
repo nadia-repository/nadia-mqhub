@@ -1,6 +1,6 @@
 package com.nadia.mqhub.job.processor;
 
-import com.nadia.mqhub.common.ThreadFactoryImpl;
+import com.nadia.mqhub.common.utils.ThreadFactoryImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

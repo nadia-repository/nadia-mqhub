@@ -12,7 +12,7 @@ public class MqClientMessageEntity {
     private String bizType;
     private String message;
     private String messageType;
-    private String destination;
+    private String topic;
     private String tags;
     private String messageKey;
     private String status;
