@@ -1,6 +1,7 @@
-package com.nadia.mqhub.common.domain;
+package com.nadia.mqhub.consumer.mq.config;
 
 import com.google.common.collect.Maps;
+import com.nadia.mqhub.consumer.mq.MqMessageListener;
 import lombok.Data;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,16 +12,7 @@ import java.util.Map;
 
 @Data
 @Component
-public class ProducerConfig {
-	private String dataSource;
-	private String mqClientTableName;
-	private String mqClientIdempotentTableName;
-	private int workQueueCorePoolSize = 5;
-	private int workQueueMaxPoolSize = 5;
-	private int workQueueCapacity = 2000;
-	private int workQueueKeepAliveSeconds = 300;
-	@Value("${mqhub.rmq.producerGroupName:}")
-	private String producerGroupName;
+public class ConsumerConfig {
 	@Value("${mqhub.rmq.nameSrv:}")
 	private String nameSrv;
 
@@ -31,10 +23,8 @@ public class ProducerConfig {
 	private Map<String, Long> impactedTopicVersions = Maps.newConcurrentMap();
 	private Map<String, List<Long>> supportedTopicVersion = Maps.newConcurrentMap();
 
-
 	private MessageQueueSelector customizedMQSelector;
-
-	private MqType mqType;
-
 	private boolean msgListeningOrderly = false;
+
+	private MqMessageListener mqMessageListener;
 }

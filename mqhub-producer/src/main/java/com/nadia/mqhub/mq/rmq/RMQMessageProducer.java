@@ -3,7 +3,7 @@ package com.nadia.mqhub.mq.rmq;
 import com.nadia.mqhub.common.annotation.ProducerType;
 import com.nadia.mqhub.common.domain.MqResult;
 import com.nadia.mqhub.common.domain.MqType;
-import com.nadia.mqhub.common.domain.ProducerConfig;
+import com.nadia.mqhub.config.ProducerConfig;
 import com.nadia.mqhub.common.entity.MqClientMessageEntity;
 import com.nadia.mqhub.mq.Callback;
 import com.nadia.mqhub.mq.MqMessageProducer;
